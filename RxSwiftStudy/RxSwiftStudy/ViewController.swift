@@ -15,9 +15,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        observableTest()
-        observableCreateTest()
-        observableFactoryTest()
+//        observableTest()
+//        observableCreateTest()
+//        observableFactoryTest()
+        challengesQuestion1()
     }
 
     func observableTest() {
@@ -129,6 +130,31 @@ class ViewController: UIViewController {
             }
         }
         .disposed(by: disposeBag)
+    }
+    
+    func challengesQuestion1() {
+        let observable = Observable<Any>.never()
+        let disposeBag = DisposeBag()
+        
+        observable.do(
+            onSubscribe: { print("Subscribed") }
+        ).subscribe(
+            onNext: { (element) in
+                print(element)
+        }, onCompleted: {
+            print("Completed")
+        }
+        ).disposed(by: disposeBag)
+        
+//        observable
+//            .subscribe(
+//                onNext: { (element) in
+//                    print(element)
+//            },
+//                onCompleted: {
+//                    print("Completed")
+//            }
+//        )
     }
 
 }
