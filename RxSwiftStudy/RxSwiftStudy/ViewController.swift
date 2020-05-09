@@ -19,6 +19,7 @@ class ViewController: UIViewController {
 //        observableCreateTest()
 //        observableFactoryTest()
         challengesQuestion1()
+        challengesQuestion2()
     }
 
     func observableTest() {
@@ -157,5 +158,15 @@ class ViewController: UIViewController {
 //        )
     }
 
+    func challengesQuestion2() {
+        let observable = Observable<Any>.never()
+        let disposeBag = DisposeBag()
+        
+        observable
+            .debug("never Confirmed")
+            .subscribe()
+            .disposed(by: disposeBag)
+    }
+    
 }
 
