@@ -20,8 +20,9 @@ class ViewController: UIViewController {
 //        observableFactoryTest()
 //        challengesQuestion1()
 //        challengesQuestion2()
+//        subjectTest()
         
-        subjectTest()
+        behaviorSubjectTest()
     }
 
     func observableTest() {
@@ -200,8 +201,32 @@ class ViewController: UIViewController {
         
         subject.onNext("?") // re-emit "completed"
         
-        
     }
     
+    func behaviorSubjectTest() {
+        let subject = BehaviorSubject(value: "Initial Value")
+        let disposeBag = DisposeBag()
+        subject.subscribe{
+            printFunc(label: "1)", event: $0)
+        }.disposed(by: disposeBag)
+        
+        enum MyError: Error {
+            case anError
+        }
+        
+        func printFunc<T: CustomStringConvertible>(label: String, event: Event<T>) {
+            print(label, event.element ?? event.error ?? event)
+        }
+        
+        subject.onNext("X")
+        subject.subscribe {
+            printFunc(label: "2)", event: $0)
+        }.disposed(by: disposeBag)
+        
+        subject.onError(MyError.anError)
+        subject.subscribe {
+            printFunc(label: "3)", event: $0)
+        }.disposed(by: disposeBag)
+    }
 }
 
