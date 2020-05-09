@@ -18,8 +18,10 @@ class ViewController: UIViewController {
 //        observableTest()
 //        observableCreateTest()
 //        observableFactoryTest()
-        challengesQuestion1()
-        challengesQuestion2()
+//        challengesQuestion1()
+//        challengesQuestion2()
+        
+        subjectTest()
     }
 
     func observableTest() {
@@ -166,6 +168,20 @@ class ViewController: UIViewController {
             .debug("never Confirmed")
             .subscribe()
             .disposed(by: disposeBag)
+    }
+    
+    func subjectTest() {
+        let subject = PublishSubject<String>()
+        subject.onNext("Is anyone Listening?")
+        
+        let subscriptionOne = subject.subscribe(onNext: { string in
+            print(string)
+        })
+        subject.on(.next("1"))
+        subject.onNext("2")
+        
+        subscriptionOne.dispose()
+        subject.onNext("3") // Do not processed because subscriptionOne is disposed.
     }
     
 }
