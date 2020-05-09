@@ -21,8 +21,9 @@ class ViewController: UIViewController {
 //        challengesQuestion1()
 //        challengesQuestion2()
 //        subjectTest()
+//        behaviorSubjectTest()
         
-        behaviorSubjectTest()
+        replaySubjectTest()
     }
 
     func observableTest() {
@@ -226,6 +227,23 @@ class ViewController: UIViewController {
         subject.onError(MyError.anError)
         subject.subscribe {
             printFunc(label: "3)", event: $0)
+        }.disposed(by: disposeBag)
+    }
+    
+    func replaySubjectTest() {
+        let subject = ReplaySubject<String>.create(bufferSize: 2)
+        let disposeBag = DisposeBag()
+        
+        subject.onNext("1")
+        subject.onNext("2")
+        subject.onNext("3")
+        
+        subject.subscribe {
+            print("1)", $0)
+        }.disposed(by: disposeBag)
+        
+        subject.subscribe {
+            print("2)", $0)
         }.disposed(by: disposeBag)
     }
 }
