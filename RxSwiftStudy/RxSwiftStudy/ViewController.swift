@@ -16,9 +16,11 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         observableTest()
+        observableCreateTest()
     }
 
     func observableTest() {
+        let disposeBag = DisposeBag()
         let observable = Observable<Int>.range(start: 0, count: 10)
         observable.subscribe(onNext: { (i) in
             let n = Double(i)
@@ -29,10 +31,28 @@ class ViewController: UIViewController {
         })
         
         let observable2 = Observable.of("A", "B", "C")
-        let subscription = observable2.subscribe({ (event) in
-            print(event)
-        })
-        subscription.dispose()
+        observable2.subscribe{
+            print($0)
+            }
+        .disposed(by: disposeBag)
+        
+//        subscription.dispose()
+    }
+    
+    func observableCreateTest() {
+        let disposeBag = DisposeBag()
+        Observable<String>.create({ (observer) -> Disposable in
+            observer.onNext("1")
+            observer.onCompleted()
+            observer.onNext("?")
+            
+            return Disposables.create()
+        }).subscribe(
+            onNext: { print($0) },
+            onError: { print($0) },
+            onCompleted: { print("Completed") },
+            onDisposed: { print("Disposed") }
+        ).disposed(by: disposeBag)
     }
 
 }
