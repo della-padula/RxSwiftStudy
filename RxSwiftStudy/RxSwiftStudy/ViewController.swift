@@ -17,6 +17,7 @@ class ViewController: UIViewController {
         
         observableTest()
         observableCreateTest()
+        observableFactoryTest()
     }
 
     func observableTest() {
@@ -40,9 +41,14 @@ class ViewController: UIViewController {
     }
     
     func observableCreateTest() {
+        enum MyError: Error {
+            case anError
+        }
+        
         let disposeBag = DisposeBag()
         Observable<String>.create({ (observer) -> Disposable in
             observer.onNext("1")
+            observer.onError(MyError.anError) // onCompleted is not called
             observer.onCompleted()
             observer.onNext("?")
             
@@ -53,6 +59,28 @@ class ViewController: UIViewController {
             onCompleted: { print("Completed") },
             onDisposed: { print("Disposed") }
         ).disposed(by: disposeBag)
+    }
+    
+    func observableFactoryTest() {
+        let disposeBag = DisposeBag()
+        var flip = false
+        let factory: Observable<Int> = Observable.deferred{
+            flip = !flip
+            if flip {
+                return Observable.of(1,2,3)
+            } else {
+                return Observable.of(4,5,6)
+            }
+        }
+        
+        for _ in 0...3 {
+            factory.subscribe(onNext: {
+                print($0, terminator: "")
+            })
+            .disposed(by: disposeBag)
+            
+            print()
+        }
     }
 
 }
